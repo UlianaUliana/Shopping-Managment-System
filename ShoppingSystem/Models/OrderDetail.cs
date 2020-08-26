@@ -5,14 +5,13 @@ using System.Threading.Tasks;
 
 namespace ShoppingSystem.Models
 {
-    public class SuperMarket
+    public class OrderDetail
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Address { get; set; }
-
+        public int OrderId { get; set; }
+        public int ProductId { get; set; }
+        public float Quantity { get; set; }
         public Order Order { get; set; }
-
-        //public ICollection<Order> Orders { get; set; }
+        public Product Product { get; set; }
     }
 }
