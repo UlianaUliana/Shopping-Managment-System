@@ -20,13 +20,20 @@ namespace ShoppingSystem.Controllers
         }
 
         // GET: Customers
-        public async Task<IActionResult> Index(string? sortOrder)
+        public async Task<IActionResult> Index(string? sortOrder, string searchString)
         {
-            //ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
-            ViewBag.NameSortParm = sortOrder == "Name" ? "Name_desc" : "Name";
+            //ViewBag.NameSortParm = sortOrder == "Name" ? "Name_desc" : "Name";
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
             ViewBag.AddressSortParm = sortOrder == "Address" ? "Address_desc" : "Address";
             var customers = from s in _context.Customers
                            select s;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                customers = customers.Where(c => c.LastName.Contains(searchString)
+                                       || c.FirstName.Contains(searchString));
+            }
+
             switch (sortOrder)
             {
                 case "Name":
@@ -46,8 +53,6 @@ namespace ShoppingSystem.Controllers
                     break;
             }
             return View(await customers.ToListAsync());
-
-            //return View(await _context.Customers.ToListAsync());
         }
 
         // GET: Customers/Details/5
