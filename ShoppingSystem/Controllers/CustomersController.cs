@@ -20,9 +20,34 @@ namespace ShoppingSystem.Controllers
         }
 
         // GET: Customers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? sortOrder)
         {
-            return View(await _context.Customers.ToListAsync());
+            //ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
+            ViewBag.NameSortParm = sortOrder == "Name" ? "Name_desc" : "Name";
+            ViewBag.AddressSortParm = sortOrder == "Address" ? "Address_desc" : "Address";
+            var customers = from s in _context.Customers
+                           select s;
+            switch (sortOrder)
+            {
+                case "Name":
+                    customers = customers.OrderBy(c => c.LastName);
+                    break;
+                case "Name_desc":
+                    customers = customers.OrderByDescending(c => c.LastName);
+                    break;
+                case "Address":
+                    customers = customers.OrderBy(c => c.Address);
+                    break;
+                case "Address_desc":
+                    customers = customers.OrderByDescending(c => c.Address);
+                    break;
+                default:
+                    customers = customers.OrderBy(c => c.LastName);
+                    break;
+            }
+            return View(await customers.ToListAsync());
+
+            //return View(await _context.Customers.ToListAsync());
         }
 
         // GET: Customers/Details/5
