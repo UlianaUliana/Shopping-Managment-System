@@ -20,9 +20,21 @@ namespace ShoppingSystem.Controllers
         }
 
         // GET: SuperMarkets
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.SuperMarkets.ToListAsync());
+            int pageSize = 3;
+
+            IQueryable<SuperMarket> source = _context.SuperMarkets;
+            var count = await source.CountAsync();
+            var items = await source.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+            IndexViewModel viewModel = new IndexViewModel
+            {
+                PageViewModel = pageViewModel,
+                Supermarkets = items
+            };
+            return View(viewModel);
         }
 
         // GET: SuperMarkets/Details/5
